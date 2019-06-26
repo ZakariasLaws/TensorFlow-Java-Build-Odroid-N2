@@ -1,6 +1,6 @@
-# Build TensorFlow Java API for Odroid-n2
+# Build TensorFlow Java API for Odroid-N2
 
-This guide will help you build the [TensorFlow Java API](https://www.tensorflow.org/install/lang_java) from source on Odroid-n2, using the stable r1.14 TensorFlow branch.
+This guide will help you build the [TensorFlow Java API](https://www.tensorflow.org/install/lang_java) from source on Odroid-N2, using the stable r1.14 TensorFlow branch.
 
 In order to use the TensorFlow Java API, the TensorFlow JAR and JNI files are required, at the time of writing, the official [TensorFlow website](https://www.tensorflow.org/install/lang_java) does not support aarch64 devices, hence the required files need to be built from source.
 
