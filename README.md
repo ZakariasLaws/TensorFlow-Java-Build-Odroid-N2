@@ -251,7 +251,7 @@ You can test the installation by compiling the `TensorFlowExample.java` file pro
 ```bash
 odroid@odroid:~$ javac -cp /path/to/bazel-bin/tensorflow/java/libtensorflow.jar TensorfFlowExample.java
 odroid@odroid:~$ java -cp /path/to/bazel-bin/tensorflow/java/libtensorflow.jar:. -Djava.library.path=/bazel-bin/tensorflow/java/ TensorFlowExample
-TensorFlowExample using TensorFlow version: 1.14.0
+TensorFlowExample using TensorFlow version: 1.11.0
 ```
 
 You're done!
