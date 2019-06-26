@@ -1,6 +1,6 @@
 # Build TensorFlow Java API for Odroid-N2
 
-This guide will help you build the [TensorFlow Java API](https://www.tensorflow.org/install/lang_java) from source on Odroid-N2, using the stable r1.14 TensorFlow branch.
+This guide will help you build the [TensorFlow Java API](https://www.tensorflow.org/install/lang_java) from source on Odroid-N2, using the r1.11 TensorFlow branch.
 
 In order to use the TensorFlow Java API, the TensorFlow JAR and JNI files are required, at the time of writing, the official [TensorFlow website](https://www.tensorflow.org/install/lang_java) does not support aarch64 devices, hence the required files need to be built from source.
 
@@ -83,7 +83,7 @@ gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04.1)
 ```
 
 ## Bazel
-In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the official build tool for TensorFlow, developed and maintained by Google. The latest TensorFlow version 1 branch [r1.14](https://www.tensorflow.org/api_docs/python/tf) can not be built (at the moment of writing) with a Bazel version later than 0.25.2.
+In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the official build tool for TensorFlow, developed and maintained by Google. The [r1.11](https://www.tensorflow.org/api_docs/python/tf) TensorFlow branch can not be built (at the moment of writing) with a Bazel version later than 0.25.2.
 
 Download the bazel archive `bazel-0.25.2-dist.zip` from the [bazel releases github](https://github.com/bazelbuild/bazel/releases), unzip it to a location of choice. or download with wget:
 Alternatively, use `wget` and `unzip`.
@@ -144,17 +144,17 @@ Getting more help:
                    Displays a list of keys used by the info command.
 ```
 
-## Install TensorFlow r1.14
+## Install TensorFlow r1.11
 Now we are ready to build TensorFlow from source, start with cloning the [Tensorflow GitHub page] (https://github.com/tensorflow/tensorflow), this might take a few minutes:
 
 ```bash
 git clone https://github.com/tensorflow/tensorflow.git
 ```
 
-When finished, enter the directory and checkout branch r1.14, which we want to install.
+When finished, enter the directory and checkout branch r1.11, which we want to install.
 ```bash
 cd tensorflow
-checkout r1.14
+checkout r1.11
 ```
 
 Before starting the build, configure the installation by using the default python path and selecting no (`n`) on everything:
@@ -215,16 +215,22 @@ Configuration finished
 Finally, build TensorFlow. Be patient, this will take up to 8 hours (depending on resource utilization... 
 
 * In case you are connected to the Odroid with `ssh` and want to run the build in the background in orer to exit the session, use `nohup`, see the second command. 
-* The flag `--local_resources 2048,2,1.0` tells Bazel we want to use 2048MB of memory and 2 cores and 1.0 in available I/O, not specifying this will result in too many threads spawning, creating an infinite compilation which will be killed by the operating system.
+* The flag `--local_resources 2048,2,1.0` tells Bazel we want to use 2048MB of memory and 1 cores and 1.0 in available I/O, not specifying this will result in too many threads spawning, creating an infinite compilation which will be killed by the operating system. This would look something like this:
+   ```bash
+   [3,640 / 4,917] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 754s local ... (6 actions, 2 running)
+   [3,640 / 4,917] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 2364s local ... (6 actions, 2 running)
+   ERROR: /home/odroid/Constellation/tensorflow/tensorflow/core/kernels/BUILD:3255:1: C++ compilation of rule '//tensorflow/core/kernels:matrix_square_root_op' failed (Exit 4)
+   gcc: internal compiler error: Killed (program cc1plus)
+   ```
 * The flag `--host_javabase=@local_jdk//:jdk` tells bazel which compilation flag we wish to use, this is necessary in case bazel does not automatically pick up the location of the installed JDK.
 * The `--config opt` specifies targets to compile, in our case this is the TensorFlow JAR archive and the native Java bindings for aarch64.
 
 ```bash
-bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,2,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni
+bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,.5,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni
 ```
 Using nohup
 ```bash
-nohup bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,2,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni &
+nohup bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,.5,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni &
 ```
 
 Watch the progress when running in the background:
