@@ -37,7 +37,6 @@ Press <enter> to keep the current choice[*], or type selection number: 2
 ```
 
 Repeat the previous operation for javac and verify them both.
-Verify
 ```bash
 odroid@odroid:~$ java -version
 openjdk version "1.8.0_212"
