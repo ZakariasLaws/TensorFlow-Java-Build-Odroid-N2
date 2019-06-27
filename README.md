@@ -232,12 +232,12 @@ Using nohup
 nohup bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,.5,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni &
 ```
 
-Watch the progress when running in the background:
+Watch the progress when running in the background, there should be about `[... / 5,214] actions` in total:
 ```bash
 watch tail nohup.out
 ```
 
-After it all finishes you will see something like this:
+When it is done you will see similar output to this:
 ```bash
 TODO
 ```
