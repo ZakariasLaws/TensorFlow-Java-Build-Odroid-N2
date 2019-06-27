@@ -240,8 +240,8 @@ Finally, build TensorFlow. Be patient, this will take up to 8 hours (depending o
 * In case you are connected to the Odroid with `ssh` and want to run the build in the background in orer to exit the session, use `nohup`, see the second command. 
 * The flag `--local_resources 2048,2,1.0` tells Bazel we want to use 2048MB of memory and 1 cores and 1.0 in available I/O, not specifying this will result in too many threads spawning, creating an infinite compilation which will be killed by the operating system. This would look something like this:
    ```bash
-   [3,640 / 4,917] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 754s local ... (6 actions, 2 running)
-   [3,640 / 4,917] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 2364s local ... (6 actions, 2 running)
+   [2,359 / 2,470] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 754s local ... (6 actions, 2 running)
+   [2,359 / 2,470] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 2364s local ... (6 actions, 2 running)
    ERROR: /home/odroid/Constellation/tensorflow/tensorflow/core/kernels/BUILD:3255:1: C++ compilation of rule '//tensorflow/core/kernels:matrix_square_root_op' failed (Exit 4)
    gcc: internal compiler error: Killed (program cc1plus)
    ```
@@ -263,7 +263,11 @@ watch tail nohup.out
 
 When it is done you will see similar output to this:
 ```bash
-TODO
+[2,470 / 2,470]
+INFO: Elapsed time: 23339.351s, Critical Path: 911.43s
+INFO: 1013 processes: 1011 local, 2 worker.
+INFO: Build completed successfully, 1016 total actions
+INFO: Build completed successfully, 1016 total actions
 ```
 
 In order to use the Java bindings, compile your Java source file with`-cp bazel-bin/tensorflow/java/libtensorflow.jar` and run the generated class file with `-cp bazel-bin/tensorflow/java/libtensorflow.jar:. -Djava.library.path=bazel-bin/tensorflow/java/`.
