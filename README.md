@@ -55,6 +55,19 @@ sudo apt install pkg-config zip g++ zlib1g-dev unzip autoconf automake libtool
 sudo apt update
 sudo apt upgrade
 ```
+### Pyhton
+Python 2.7.15+
+```bash
+# For Python 2.7
+sudo apt-get install python-pip python-numpy swig python-dev future
+sudo pip install wheel
+```
+
+Python 3.6+
+```bash
+sudo apt-get install python3-pip python3-numpy swig python3-dev
+sudo pip3 install wheel
+```
 
 ##### GCC and G++
 
