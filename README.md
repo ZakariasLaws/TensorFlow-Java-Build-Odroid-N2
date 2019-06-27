@@ -87,8 +87,8 @@ In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the o
 Download the bazel archive `bazel-0.25.2-dist.zip` from the [bazel releases github](https://github.com/bazelbuild/bazel/releases), unzip it to a location of choice. or download with wget:
 Alternatively, use `wget` and `unzip`.
 ```bash
-wget https://github.com/bazelbuild/bazel/releases/download/0.22.0/bazel-0.22.0-dist.zip
-unzip -d bazel bazel-0.22.0-dist.zip
+wget https://github.com/bazelbuild/bazel/releases/download/0.25.2/bazel-0.25.2-dist.zip
+unzip -d bazel bazel-0.25.2-dist.zip
 cd bazel
 ```
 
