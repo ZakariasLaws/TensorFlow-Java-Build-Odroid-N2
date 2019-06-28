@@ -59,7 +59,8 @@ sudo apt upgrade
 Python 2.7.15+
 ```bash
 # For Python 2.7
-sudo apt-get install python-pip python-numpy swig python-dev future
+sudo apt-get install python-pip python-numpy swig python-dev
+sudo pip install future
 sudo pip install wheel
 ```
 
