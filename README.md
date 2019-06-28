@@ -95,13 +95,13 @@ gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04.1)
 ```
 
 ## Bazel
-In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the official build tool for TensorFlow, developed and maintained by Google. The [r1.11](https://www.tensorflow.org/api_docs/python/tf) TensorFlow branch can not be built (at the moment of writing) with a Bazel version later than 0.25.2.
+In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the official build tool for TensorFlow, developed and maintained by Google. It works to build [r1.11](https://www.tensorflow.org/api_docs/python/tf) TensorFlow with version 0.15.0, however, it might also work with later/earlier versions.
 
-Download the bazel archive `bazel-0.25.2-dist.zip` from the [bazel releases github](https://github.com/bazelbuild/bazel/releases), unzip it to a location of choice. or download with wget:
+Download the bazel archive `bazel-0.15.0-dist.zip` from the [bazel releases github](https://github.com/bazelbuild/bazel/releases), unzip it to a location of choice. or download with wget:
 Alternatively, use `wget` and `unzip`.
 ```bash
-wget https://github.com/bazelbuild/bazel/releases/download/0.25.2/bazel-0.25.2-dist.zip
-unzip -d bazel bazel-0.25.2-dist.zip
+wget https://github.com/bazelbuild/bazel/releases/download/0.15.0/bazel-0.15.0-dist.zip
+unzip -d bazel bazel-0.15.0-dist.zip
 cd bazel
 ```
 
