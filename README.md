@@ -45,6 +45,7 @@ openjdk version "1.8.0_212"
 OpenJDK Runtime Environment (build 1.8.0_212-8u212-b03-0ubuntu1.18.04.1-b03)
 OpenJDK 64-Bit Server VM (build 25.212-b03, mixed mode)
 ```
+
 ```bash
 javac -version
 javac 1.8.0_212
@@ -115,7 +116,7 @@ Most likely you will require some extra swap memory in order to Compile TensorFl
 4. Turn on swap:
    ```bash
    sudo mkswap /swapfile
-   ```bash
+   ```
 5. Activate swap:
    ```bash
    sudo swapon /swapfile
