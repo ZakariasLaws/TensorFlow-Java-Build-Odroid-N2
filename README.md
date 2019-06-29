@@ -1,12 +1,14 @@
 # Build TensorFlow Java API for Odroid-N2
 
-This guide will help you build the [TensorFlow Java API](https://www.tensorflow.org/install/lang_java) from source on Odroid-N2, using the r1.11 TensorFlow branch.
+This guide will help you build the [TensorFlow Java API](https://www.tensorflow.org/install/lang_java) from source on Odroid-N2, using the latest stable r1.14 TensorFlow branch.
 
 In order to use the TensorFlow Java API, the TensorFlow JAR and JNI files are required, at the time of writing, the official [TensorFlow website](https://www.tensorflow.org/install/lang_java) does not support aarch64 devices, hence the required files need to be built from source.
 
 * See `/build/` for the already built files, if you are lucky, these files might work out of the box (as long as you have installed the dependencies). To use, simply copy the directory `bazel-bin` to your project, after which you can compile and run your code according to section [Test Installation](#test).
 
 ## Dependencies
+
+OpenJDK 8 is necessary to download and install Bazel version 0.25.2, later when installing TensorFlow, a later Java version can be used.
 
 ### OpenJDK 8
 OpenJDK version 8 is available from the PPA repository [OpenJDK builds](https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa).
@@ -95,14 +97,46 @@ Thread model: posix
 gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04.1) 
 ```
 
-## Bazel
-In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the official build tool for TensorFlow, developed and maintained by Google. It works to build [r1.11](https://www.tensorflow.org/api_docs/python/tf) TensorFlow with version 0.15.0, however, it might also work with later/earlier versions.
+## Swap Memory
+Most likely you will require some extra swap memory in order to Compile TensorFlow, this can be added temporarily by following the next few steps.
 
-Download the bazel archive `bazel-0.15.0-dist.zip` from the [bazel releases github](https://github.com/bazelbuild/bazel/releases), unzip it to a location of choice. or download with wget:
+1. Check if there already is swap installed, you should preferably only have one swap partion at the time. If the output is empty, you don't currently have any swap installed
+   ```bash
+   sudo swapon --show
+   ```
+2. Create a swap partions:
+   ```bash
+   sudo fallocate -l 10G /swapfile
+   ```
+3. Set root permission:
+   ```bash
+   sudo chmod 600 /swapfile
+   ```
+4. Turn on swap:
+   ```bash
+   sudo mkswap /swapfile
+   ```bash
+5. Activate swap:
+   ```bash
+   sudo swapon /swapfile
+   ```
+6. Check that the swap file was succesfully setup with `free -h`:
+   ```bash
+   odroid@odroid:~$ free -h
+   total        used        free      shared  buff/cache   available
+   Mem:           3.6G        162M        2.7G        120K        791M        3.4G
+   Swap:           10G        125M         10G
+   ```
+If you wish to make the swap partition persist when rebooting the Odroid, add the following line `/swapfile swap swap defaults 0 0` to the `/etc/fstab` file.
+
+## Bazel
+In order to build TensorFlow we need to use [Bazel](https://bazel.build/), the official build tool for TensorFlow, developed and maintained by Google. It works to build [r1.14](https://www.tensorflow.org/api_docs/python/tf) TensorFlow with version 0.25.2, however, it might also work with later/earlier versions.
+
+Download the bazel archive `bazel-0.25.2-dist.zip` from the [bazel releases github](https://github.com/bazelbuild/bazel/releases), unzip it to a location of choice. or download with wget:
 Alternatively, use `wget` and `unzip`.
 ```bash
-wget https://github.com/bazelbuild/bazel/releases/download/0.15.0/bazel-0.15.0-dist.zip
-unzip -d bazel bazel-0.15.0-dist.zip
+wget https://github.com/bazelbuild/bazel/releases/download/0.25.2/bazel-0.25.2-dist.zip
+unzip -d bazel bazel-0.25.2-dist.zip
 cd bazel
 ```
 
@@ -157,24 +191,27 @@ Getting more help:
                    Displays a list of keys used by the info command.
 ```
 
-## Install TensorFlow r1.11
+## Install TensorFlow r1.14
 Now we are ready to build TensorFlow from source, start with cloning the [Tensorflow GitHub page] (https://github.com/tensorflow/tensorflow), this might take a few minutes:
 
 ```bash
 git clone https://github.com/tensorflow/tensorflow.git
 ```
 
-When finished, enter the directory and checkout branch r1.11, which we want to install.
+When finished, enter the directory and checkout branch r1.14, which we want to install.
 ```bash
 cd tensorflow
-checkout r1.11
+checkout r1.14
 ```
 
 Before starting the build, configure the installation by using the default python path and selecting no (`n`) on everything:
 ```bash
 odroid@odroid:~$ ./configure
-WARNING: The following rc files are no longer being read, please transfer their contents or import their path into one of the standard rc files:
-/home/odroid/Constellation/tensorflow/tools/bazel.rc
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.google.protobuf.UnsafeUtil (file:/home/odroid/.cache/bazel/_bazel_odroid/install/0551bb8d4f083266f46f0e4b52f8846f/_embedded_binaries/A-server.jar) to field java.nio.Buffer.address
+WARNING: Please consider reporting this to the maintainers of com.google.protobuf.UnsafeUtil
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
 WARNING: --batch mode is deprecated. Please instead explicitly shut down your Bazel server using the command "bazel shutdown".
 You have bazel 0.25.2- (@non-git) installed.
 Please specify the location of python. [Default is /usr/bin/python]: 
@@ -185,35 +222,14 @@ Found possible Python library paths:
   /usr/lib/python2.7/dist-packages
 Please input the desired Python library path to use.  Default is [/usr/local/lib/python2.7/dist-packages]
 
-Do you wish to build TensorFlow with jemalloc as malloc support? [Y/n]: n
-No jemalloc as malloc support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with Google Cloud Platform support? [Y/n]: n
-No Google Cloud Platform support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with Hadoop File System support? [Y/n]: n
-No Hadoop File System support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with Amazon AWS Platform support? [Y/n]: n
-No Amazon AWS Platform support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with Apache Kafka Platform support? [Y/n]: n
-No Apache Kafka Platform support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with XLA JIT support? [y/N]: n
+Do you wish to build TensorFlow with XLA JIT support? [Y/n]: n
 No XLA JIT support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with GDR support? [y/N]: n
-No GDR support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with VERBS support? [y/N]: n
-No VERBS support will be enabled for TensorFlow.
-
-Do you wish to build TensorFlow with nGraph support? [y/N]: n
-No nGraph support will be enabled for TensorFlow.
 
 Do you wish to build TensorFlow with OpenCL SYCL support? [y/N]: n
 No OpenCL SYCL support will be enabled for TensorFlow.
+
+Do you wish to build TensorFlow with ROCm support? [y/N]: n
+No ROCm support will be enabled for TensorFlow.
 
 Do you wish to build TensorFlow with CUDA support? [y/N]: n
 No CUDA support will be enabled for TensorFlow.
@@ -224,22 +240,35 @@ Clang will not be downloaded.
 Do you wish to build TensorFlow with MPI support? [y/N]: n
 No MPI support will be enabled for TensorFlow.
 
-Please specify optimization flags to use during compilation when bazel option "--config=opt" is specified [Default is -march=native]: 
+Please specify optimization flags to use during compilation when bazel option "--config=opt" is specified [Default is -march=native -Wno-sign-compare]:  
 
 
 Would you like to interactively configure ./WORKSPACE for Android builds? [y/N]: n
 Not configuring the WORKSPACE for Android builds.
 
-Preconfigured Bazel build configs. You can use any of the below by adding "--config=<>" to your build command. See tools/bazel.rc for more details.
+Preconfigured Bazel build configs. You can use any of the below by adding "--config=<>" to your build command. See .bazelrc for more details.
 	--config=mkl         	# Build with MKL support.
 	--config=monolithic  	# Config for mostly static monolithic build.
+	--config=gdr         	# Build with GDR support.
+	--config=verbs       	# Build with libverbs support.
+	--config=ngraph      	# Build with Intel nGraph support.
+	--config=numa        	# Build with NUMA support.
+	--config=dynamic_kernels	# (Experimental) Build kernels into separate shared objects.
+Preconfigured Bazel build configs to DISABLE default on features:
+	--config=noaws       	# Disable AWS S3 filesystem support.
+	--config=nogcp       	# Disable GCP support.
+	--config=nohdfs      	# Disable HDFS support.
+	--config=noignite    	# Disable Apache Ignite support.
+	--config=nokafka     	# Disable Apache Kafka support.
+	--config=nonccl      	# Disable NVIDIA NCCL support.
 Configuration finished
+
 ```
 
 Finally, build TensorFlow. Be patient, this will take up to 8 hours (depending on resource utilization... 
 
 * In case you are connected to the Odroid with `ssh` and want to run the build in the background in orer to exit the session, use `nohup`, see the second command. 
-* The flag `--local_resources 2048,2,1.0` tells Bazel we want to use 2048MB of memory and 1 cores and 1.0 in available I/O, not specifying this will result in too many threads spawning, creating an infinite compilation which will be killed by the operating system. This would look something like this:
+* The flag `--local_resources 2048,2,1.0` tells Bazel we want to use 2048MB of memory and 2 cores and 1.0 in available I/O, not specifying this will result in too many threads spawning, creating an infinite compilation which will be killed by the operating system. This would look something like this:
    ```bash
    [2,359 / 2,470] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 754s local ... (6 actions, 2 running)
    [2,359 / 2,470] Compiling tensorflow/core/kernels/matrix_square_root_op.cc; 2364s local ... (6 actions, 2 running)
@@ -250,21 +279,21 @@ Finally, build TensorFlow. Be patient, this will take up to 8 hours (depending o
 * The `--config opt` specifies targets to compile, in our case this is the TensorFlow JAR archive and the native Java bindings for aarch64.
 
 ```bash
-bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,.5,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni
+bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,2,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni
 ```
 Using nohup
 ```bash
-nohup bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,.5,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni &
+nohup bazel build --host_javabase=@local_jdk//:jdk --local_resources 2048,2,1.0 --config opt //tensorflow/java:tensorflow //tensorflow/java:libtensorflow_jni &
 ```
 
-Watch the progress when running in the background, there should be about `[... / 5,214] actions` in total:
+Watch the progress when running in the background, there should be about `[... / 5,292] actions` in total:
 ```bash
 watch tail nohup.out
 ```
 
 When it is done you will see similar output to this:
 ```bash
-[2,470 / 2,470]
+[5,292 / 5,292]
 INFO: Elapsed time: 23339.351s, Critical Path: 911.43s
 INFO: 1013 processes: 1011 local, 2 worker.
 INFO: Build completed successfully, 1016 total actions
@@ -279,7 +308,7 @@ You can test the installation by compiling the `TensorFlowExample.java` file pro
 ```bash
 odroid@odroid:~$ javac -cp /path/to/bazel-bin/tensorflow/java/libtensorflow.jar TensorfFlowExample.java
 odroid@odroid:~$ java -cp /path/to/bazel-bin/tensorflow/java/libtensorflow.jar:. -Djava.library.path=/bazel-bin/tensorflow/java/ TensorFlowExample
-TensorFlowExample using TensorFlow version: 1.11.0
+TensorFlowExample using TensorFlow version: 1.14.0
 ```
 
 You're done!
