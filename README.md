@@ -59,7 +59,7 @@ sudo apt update
 sudo apt upgrade
 ```
 ### Pyhton
-Python 2.7.15+
+Python 2.7
 ```bash
 # For Python 2.7
 sudo apt-get install python-pip python-numpy swig python-dev
@@ -99,7 +99,7 @@ gcc version 7.4.0 (Ubuntu/Linaro 7.4.0-1ubuntu1~18.04.1)
 ```
 
 ## Swap Memory
-Most likely you will require some extra swap memory in order to Compile TensorFlow, this can be added temporarily by following the next few steps.
+Most likely you will require some extra swap memory in order to Compile TensorFlow, this can be added temporarily by following the next few steps. The swap can be added either on an external device, such as a USB, or partitioned from disc.
 
 1. Check if there already is swap installed, you should preferably only have one swap partion at the time. If the output is empty, you don't currently have any swap installed
    ```bash
